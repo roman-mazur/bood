@@ -68,7 +68,7 @@ func (gb *goBinaryModuleType) GenerateBuildActions(ctx blueprint.ModuleContext) 
 			Description: fmt.Sprintf("Vendor dependencies of %s", name),
 			Rule:        goVendor,
 			Outputs:     []string{vendorDirPath},
-			Inputs:      []string{path.Join(ctx.ModuleDir(), "go.mod")},
+			Implicits:   []string{path.Join(ctx.ModuleDir(), "go.mod")},
 			Optional:    true,
 			Args: map[string]string{
 				"workDir": ctx.ModuleDir(),
@@ -82,13 +82,14 @@ func (gb *goBinaryModuleType) GenerateBuildActions(ctx blueprint.ModuleContext) 
 		Description: fmt.Sprintf("Build %s as Go binary", name),
 		Rule:        goBuild,
 		Outputs:     []string{outputPath},
-		Inputs:      inputs,
+		Implicits:   inputs,
 		Args: map[string]string{
 			"outputPath": outputPath,
 			"workDir":    ctx.ModuleDir(),
 			"pkg":        gb.properties.Pkg,
 		},
 	})
+
 }
 
 func BinFactory() (blueprint.Module, []interface{}) {

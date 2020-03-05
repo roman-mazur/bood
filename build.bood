@@ -2,5 +2,6 @@ go_binary {
   name: "bood",
   pkg: "github.com/roman-mazur/bood/cmd/bood",
   srcs: ["**/*.go", "go.mod"],
-  srcsExclude: ["vendor/**/*"]
+  srcsExclude: ["vendor/**/*"],
+  vendorFirst: true
 }

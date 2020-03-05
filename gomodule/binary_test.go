@@ -16,7 +16,8 @@ func Test_Factory(t *testing.T) {
 			go_binary {
 			  name: "test-out",
 			  srcs: ["test-src.go"],
-			  pkg: "."
+			  pkg: ".",
+	          vendorFirst: true
 			}
 		`),
 		"test-src.go": nil,
@@ -46,6 +47,9 @@ func Test_Factory(t *testing.T) {
 		}
 		if !strings.Contains(text, " test-src.go out/bin") {
 			t.Errorf("Generated ninja file does not have source dependency")
+		}
+		if !strings.Contains(text, "build vendor: g.gomodule.vendor go.mod") {
+			t.Errorf("Generated ninja file does not have vendor build rule")
 		}
 	}
 }

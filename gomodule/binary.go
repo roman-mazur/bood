@@ -9,13 +9,19 @@ import (
 
 var (
 	// Package context used to define Ninja build rules.
-	pctx = blueprint.NewPackageContext("github.com/roman-mazur/bood/gobinary")
+	pctx = blueprint.NewPackageContext("github.com/roman-mazur/bood/gomodule")
 
 	// Ninja rule to execute go build.
 	goBuild = pctx.StaticRule("binaryBuild", blueprint.RuleParams{
 		Command:     "cd $workDir && go build -o $outputPath $pkg",
 		Description: "build go command $pkg",
 	}, "workDir", "outputPath", "pkg")
+
+	// Ninja rule to execute go mod vendor.
+	goVendor = pctx.StaticRule("vendor", blueprint.RuleParams{
+		Command:     "cd $workDir && go mod vendor",
+		Description: "vendor dependencies of $name",
+	}, "workDir", "name")
 )
 
 type goBinaryModuleType struct {
@@ -28,6 +34,8 @@ type goBinaryModuleType struct {
 		Srcs []string
 		// Exclude patterns.
 		SrcsExclude []string
+		// If to call vendor command.
+		VendorFirst bool
 	}
 }
 
@@ -53,6 +61,22 @@ func (gb *goBinaryModuleType) GenerateBuildActions(ctx blueprint.ModuleContext) 
 	}
 
 	inputs = append(inputs, config.BinOutputPath())
+
+	if gb.properties.VendorFirst {
+		vendorDirPath := path.Join(ctx.ModuleDir(), "vendor")
+		ctx.Build(pctx, blueprint.BuildParams{
+			Description: fmt.Sprintf("Vendor dependencies of %s", name),
+			Rule:        goVendor,
+			Outputs:     []string{vendorDirPath},
+			Inputs:      []string{path.Join(ctx.ModuleDir(), "go.mod")},
+			Optional:    true,
+			Args: map[string]string{
+				"workDir": ctx.ModuleDir(),
+				"name":    name,
+			},
+		})
+		inputs = append(inputs, vendorDirPath)
+	}
 
 	ctx.Build(pctx, blueprint.BuildParams{
 		Description: fmt.Sprintf("Build %s as Go binary", name),

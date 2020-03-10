@@ -7,7 +7,7 @@ go_binary {
 
   // Build inputs.
   srcs: ["**/*.go", "go.mod"],
-  srcsExclude: ["vendor/**/*", "blueprint/**/*", "examples/**/*"],
+  srcsExclude: ["vendor/**/*", "examples/**/*"],
 
   // Flag to also perform dependencies vendoring.
   vendorFirst: true

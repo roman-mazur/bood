@@ -4,19 +4,10 @@ import (
 	"github.com/google/blueprint"
 )
 
-const (
-	binOutPath = "bin"
-
-	BlueprintFileName = "build.bood"
-)
+const PackagePath = "github.com/roman-mazur/bood"
 
 var (
 	pctx = blueprint.NewPackageContext(PackagePath)
-
-	createDir = pctx.StaticRule("createDir", blueprint.RuleParams{
-		Command:     "mkdir -p $out",
-		Description: "Ensure that directory $out exists",
-	})
 )
 
 // PrepareContext creates a new blueprint.Context registering some common modules/singletons
@@ -25,25 +16,20 @@ func PrepareContext() *blueprint.Context {
 	ctx := blueprint.NewContext()
 
 	// Register a singleton that will take care of config.BinOutputPath() directory creation.
-	ctx.RegisterSingletonType("boodInternalBinOut", binOutFactory)
+	ctx.RegisterSingletonType("boodInternalBinOut", outputDefFactory)
 
 	return ctx
 }
 
-// binOutputGenerator generates build actions that create $out/bin directory.
-type binOutputGenerator struct{}
+// outputDef adds instructions necessary to configure ninja output directory.
+type outputDef struct{}
 
-func (binOut binOutputGenerator) GenerateBuildActions(ctx blueprint.SingletonContext) {
+func (outDef outputDef) GenerateBuildActions(ctx blueprint.SingletonContext) {
 	config := ExtractConfig(ctx)
-	config.Debug.Printf("Adding build actions for %s", config.BinOutputPath())
+	config.Debug.Printf("Configure output as %s", config.BaseOutputDir)
 	ctx.SetNinjaBuildDir(pctx, config.BaseOutputDir)
-	ctx.Build(pctx, blueprint.BuildParams{
-		Rule:     createDir,
-		Outputs:  []string{config.BinOutputPath()},
-		Optional: true,
-	})
 }
 
-func binOutFactory() blueprint.Singleton {
-	return binOutputGenerator{}
+func outputDefFactory() blueprint.Singleton {
+	return outputDef{}
 }

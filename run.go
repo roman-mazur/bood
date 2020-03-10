@@ -8,6 +8,8 @@ import (
 	"path/filepath"
 )
 
+const BlueprintFileName = "build.bood"
+
 // GenerateBuildFile creates build.ninja file in the base output directory (as specified by the config).
 // This function will call methods on the context to parse blueprint files, prepare build actions,
 // and write the result file. All the modules and singletons need to be registered before calling this function.

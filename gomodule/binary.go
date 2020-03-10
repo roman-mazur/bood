@@ -60,8 +60,6 @@ func (gb *goBinaryModuleType) GenerateBuildActions(ctx blueprint.ModuleContext) 
 		return
 	}
 
-	inputs = append(inputs, config.BinOutputPath())
-
 	if gb.properties.VendorFirst {
 		vendorDirPath := path.Join(ctx.ModuleDir(), "vendor")
 		ctx.Build(pctx, blueprint.BuildParams{

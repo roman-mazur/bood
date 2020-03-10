@@ -6,7 +6,7 @@ import (
 	"path"
 )
 
-const PackagePath = "github.com/roman-mazur/bood"
+const binOutPath = "bin"
 
 // Config represents build system configuration.
 type Config struct {

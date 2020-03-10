@@ -45,10 +45,10 @@ func Test_Factory(t *testing.T) {
 		if !strings.Contains(text, "out/bin/test-out: ") {
 			t.Errorf("Generated ninja file does not have build of the test module")
 		}
-		if !strings.Contains(text, " test-src.go out/bin") {
+		if !strings.Contains(text, " test-src.go") {
 			t.Errorf("Generated ninja file does not have source dependency")
 		}
-		if !strings.Contains(text, "build vendor: g.gomodule.vendor go.mod") {
+		if !strings.Contains(text, "build vendor: g.gomodule.vendor | go.mod") {
 			t.Errorf("Generated ninja file does not have vendor build rule")
 		}
 	}

@@ -1,0 +1,5 @@
+go_binary {
+  name: "hello",
+  pkg: ".",
+  srcs: ["**/*.go"],
+}

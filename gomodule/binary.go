@@ -24,6 +24,7 @@ var (
 	}, "workDir", "name")
 )
 
+// goBinaryModuleType implements the simplest Go binary build without running tests for the target Go package.
 type goBinaryModuleType struct {
 	blueprint.SimpleName
 
@@ -90,7 +91,8 @@ func (gb *goBinaryModuleType) GenerateBuildActions(ctx blueprint.ModuleContext) 
 
 }
 
-func BinFactory() (blueprint.Module, []interface{}) {
+// SimpleBinFactory is a factory for go binary module type which supports Go command packages without running tests.
+func SimpleBinFactory() (blueprint.Module, []interface{}) {
 	mType := &goBinaryModuleType{}
 	return mType, []interface{}{&mType.SimpleName.Properties, &mType.properties}
 }

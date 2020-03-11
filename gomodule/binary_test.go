@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-func Test_Factory(t *testing.T) {
+func TestSimpleBinFactory(t *testing.T) {
 	ctx := blueprint.NewContext()
 
 	ctx.MockFileSystem(map[string][]byte{
@@ -23,7 +23,7 @@ func Test_Factory(t *testing.T) {
 		"test-src.go": nil,
 	})
 
-	ctx.RegisterModuleType("go_binary", BinFactory)
+	ctx.RegisterModuleType("go_binary", SimpleBinFactory)
 
 	cfg := bood.NewConfig()
 

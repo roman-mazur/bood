@@ -37,7 +37,14 @@ type goBinaryModuleType struct {
 		SrcsExclude []string
 		// If to call vendor command.
 		VendorFirst bool
+
+		// Example of how to specify dependencies.
+		Deps []string
 	}
+}
+
+func (gb *goBinaryModuleType) DynamicDependencies(blueprint.DynamicDependerModuleContext) []string {
+	return gb.properties.Deps
 }
 
 func (gb *goBinaryModuleType) GenerateBuildActions(ctx blueprint.ModuleContext) {

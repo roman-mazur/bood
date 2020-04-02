@@ -31,9 +31,13 @@ func GenerateBuildFile(config *Config, ctx *blueprint.Context) string {
 		log.Fatalf("Failed to initialize bood: %s", err)
 	}
 
-	deps, errs := ctx.ParseBlueprintsFiles(rootBuildFile, config)
+	entries, errs := ctx.ParseBlueprintsFiles(rootBuildFile, config)
 	checkFatalErrors(config, "Problems parsing blueprint files", errs)
-	config.Debug.Printf("Parsed blueprint files: %s", deps)
+	config.Debug.Printf("Parsed blueprint files: %s", entries)
+
+	deps, errs := ctx.ResolveDependencies(config)
+	checkFatalErrors(config, "Problems resolving dependencies in blueprint files", errs)
+	config.Debug.Printf("New modules aftre resolving deps: %s", deps)
 
 	_, errs = ctx.PrepareBuildActions(config)
 	checkFatalErrors(config, "Problems preparing build actions", errs)
